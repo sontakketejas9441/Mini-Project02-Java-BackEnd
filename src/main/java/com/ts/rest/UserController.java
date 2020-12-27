@@ -27,6 +27,7 @@ public class UserController {
 	@GetMapping("/register")
 	public ResponseEntity<String> registerUser(@RequestBody UserEntity userEntity){
 		userEntity.setPassword(generateRandom(5));
+		userEntity.setIsActive("INACTIVE");
 		boolean savedUser = userServiceImpl.saveUser(userEntity);
 		
 		if (savedUser) {
@@ -51,7 +52,7 @@ public class UserController {
     }
     
     @GetMapping("/login/{email}/{password}")
-    public ResponseEntity<String> userLoginCheck(@PathVariable ("email") String email, @PathVariable ("email") String password){
+    public ResponseEntity<String> userLoginCheck(@PathVariable ("email") String email, @PathVariable ("password") String password){
     	
     	boolean loginChecked = userServiceImpl.loginCheck(email, password);
     	
