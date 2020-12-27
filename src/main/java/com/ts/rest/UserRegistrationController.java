@@ -1,6 +1,7 @@
 package com.ts.rest;
 
 import java.security.SecureRandom;
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,34 @@ public class UserRegistrationController {
 	@Autowired
 	UserServiceImpl userServiceImpl;
 	
+	@GetMapping("/countries")
+	public Map<Integer, String> getCountries(){
+		Map<Integer, String> countries = userServiceImpl.findCountries();
+		return countries;
+	}
+
+	@GetMapping("/states/{countryId}")
+	public Map<Integer, String> getStates(@PathVariable ("countryId") Integer countryId){
+		Map<Integer, String> state = userServiceImpl.findState(countryId);
+		return state;
+	}
+
+	@GetMapping("/cities/{stateId}")
+	public Map<Integer, String> getCities(@PathVariable("stateId") Integer stateID){
+		Map<Integer, String> city = userServiceImpl.findCity(stateID);
+		return city;
+	}
+
+	@GetMapping("/emailCheck/{email}")
+	public boolean isEmailUnique(@PathVariable("email") String email){
+
+		boolean unique = userServiceImpl.isEmailUnique(email);
+		if(unique){
+			return true;
+		}
+		return false;
+	}
+
 	@GetMapping("/register")
 	public ResponseEntity<String> registerUser(@RequestBody UserEntity userEntity){
 		userEntity.setPassword(generateRandom(5));
@@ -49,14 +78,5 @@ public class UserRegistrationController {
         return sb.toString();
     }
     
-    @GetMapping("/login/{email}/{password}")
-    public ResponseEntity<String> userLoginCheck(@PathVariable ("email") String email, @PathVariable ("password") String password){
-    	
-    	boolean loginChecked = userServiceImpl.loginCheck(email, password);
-    	
-    	if(loginChecked) {
-    		return new ResponseEntity<String> ("Please Activate the account", HttpStatus.OK);
-    	}
-    	return new ResponseEntity<String> ("Please Try again..!!", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+
 }
