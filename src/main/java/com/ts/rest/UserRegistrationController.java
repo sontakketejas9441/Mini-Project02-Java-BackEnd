@@ -3,8 +3,6 @@ package com.ts.rest;
 import java.security.SecureRandom;
 import java.util.Random;
 
-import javax.websocket.server.PathParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +15,7 @@ import com.ts.Service.UserServiceImpl;
 import com.ts.entities.UserEntity;
 
 @RestController
-public class UserController {
+public class UserRegistrationController {
 
 	private static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
