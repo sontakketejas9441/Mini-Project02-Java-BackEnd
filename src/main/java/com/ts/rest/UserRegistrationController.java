@@ -13,7 +13,7 @@ import com.ts.Service.UserServiceImpl;
 import com.ts.entities.UserEntity;
 
 @RestController
-@RequestMapping("/user")
+
 public class UserRegistrationController {
 
 	private static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
