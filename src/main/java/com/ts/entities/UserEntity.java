@@ -9,10 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Table(name = "USER_MASTER")
 @Data
 @Entity
+@ToString
 public class UserEntity {
 
 	@Id
@@ -39,13 +41,13 @@ public class UserEntity {
     private String gender;
 
     @Column(name="COUNTRY")
-    private String country;
+    private Integer country;
 
     @Column(name="STATE")
-    private String state;
+    private Integer state;
 
     @Column(name="CITY")
-    private String city;
+    private Integer city;
 
     @Column(name="PASSWORD")
     private String password;

@@ -21,16 +21,16 @@ import com.ts.repository.UserEntityRepository;
 public class UserServiceImpl  implements UserService{
 	
 	@Autowired
-	UserEntityRepository userRepo;
+	private UserEntityRepository userRepo;
 	
 	@Autowired
-	CountryEntityRepository countryRepo;
+	private CountryEntityRepository countryRepo;
 	
 	@Autowired
-	StateEntityRepository stateRepo;
+	private StateEntityRepository stateRepo;
 	
 	@Autowired
-	CityEntityRepository cityRepo;
+	private CityEntityRepository cityRepo;
 	
 	@Override
 	public Map<Integer, String> findCountries() {
@@ -76,26 +76,30 @@ public class UserServiceImpl  implements UserService{
 		// TODO Auto-generated method stub
 		
 		//List<UserEntity> findByEmail = userRepo.findByEmail(email);
-		ResponseEntity<UserEntity> userEntity = userRepo.findByEmail(email);
-		
-		if(userEntity.getBody() != null) {
-			return true;
+		UserEntity entity = userRepo.findByEmail(email);
+
+		if(entity!=null) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean saveUser(UserEntity user) {
 		// TODO Auto-generated method stub
+		UserEntity userEntity = userRepo.save(user);
+		if(userEntity!=null){
+			return  true;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean loginCheck(String email, String password) {
 		// TODO Auto-generated method stub
-		ResponseEntity<UserEntity> user = userRepo.findByEmailAndPassword(email, password);
-		
-		if (user.getBody() != null){
+		UserEntity byEmailAndPassword = userRepo.findByEmailAndPassword(email, password);
+
+		if (byEmailAndPassword != null){
 			return true;
 		}
 		return false;
@@ -103,9 +107,9 @@ public class UserServiceImpl  implements UserService{
 
 	@Override
 	public boolean isTempValid(String email, String password) {
-		ResponseEntity<UserEntity> user = userRepo.findByEmailAndPassword(email, password);
-		
-		if (user.getBody() != null){
+		UserEntity byEmailAndPassword = userRepo.findByEmailAndPassword(email, password);
+
+		if (byEmailAndPassword != null){
 			return true;
 		}
 		return false;
@@ -114,13 +118,11 @@ public class UserServiceImpl  implements UserService{
 	@Override
 	public boolean unlockAccount(String email, String newpass) {
 		// TODO Auto-generated method stub
-	ResponseEntity<UserEntity> user = userRepo.findByEmail(email);
-	if(user.getBody()!=null) {
-		UserEntity userbody = user.getBody();
-		userbody.setIsActive("Active");
+		UserEntity entity = userRepo.findByEmail(email);
+		if(entity!=null) {
+		entity.setIsActive("Active");
 		return true;
-	}	
-	
+		}
 		
 		return false;
 	}

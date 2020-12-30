@@ -16,10 +16,10 @@ import com.ts.entities.UserEntity;
 
 public class UserRegistrationController {
 
-	private static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 	
 	@Autowired
-	UserServiceImpl userServiceImpl;
+	private UserServiceImpl userServiceImpl;
 	
 	@GetMapping("/countries")
 	public Map<Integer, String> getCountries(){
@@ -40,25 +40,26 @@ public class UserRegistrationController {
 	}
 
 	@GetMapping("/emailCheck/{email}")
-	public boolean isEmailUnique(@PathVariable("email") String email){
+	public String isEmailUnique(@PathVariable("email") String email){
 
 		boolean unique = userServiceImpl.isEmailUnique(email);
 		if(unique){
-			return true;
+			return "UNIQUE";
 		}
-		return false;
+		return "NOT UNIQUE";
 	}
 
-	@GetMapping("/register")
+	@PostMapping("/register")
 	public ResponseEntity<String> registerUser(@RequestBody UserEntity userEntity){
 		userEntity.setPassword(generateRandom(5));
 		userEntity.setIsActive("INACTIVE");
+		System.out.println(userEntity);
 		boolean savedUser = userServiceImpl.saveUser(userEntity);
 		
 		if (savedUser) {
 			return new ResponseEntity<String> ("User Details saved Successfully", HttpStatus.OK);
 		}
-		return new ResponseEntity<String> ("Please Try again..!!", HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<String> ("Please Try again..!!", HttpStatus.BAD_REQUEST);
 	}
 	
 	

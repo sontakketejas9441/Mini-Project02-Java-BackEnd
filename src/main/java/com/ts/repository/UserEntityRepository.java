@@ -10,7 +10,7 @@ import com.ts.entities.UserEntity;
 
 public interface UserEntityRepository extends JpaRepository<UserEntity, Serializable>{
 
-	ResponseEntity<UserEntity> findByEmail(String email);
+	public UserEntity findByEmail(String email);
 	
-	ResponseEntity<UserEntity> findByEmailAndPassword(String email, String password);
+	public UserEntity findByEmailAndPassword(String email, String password);
 }
