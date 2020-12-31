@@ -50,7 +50,7 @@ public class UserRegistrationController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<String> registerUser(@RequestBody UserEntity userEntity){
+	public ResponseEntity<String> registerUser(@RequestBody UserEntity userEntity) throws Exception{
 		userEntity.setPassword(generateRandom(5));
 		userEntity.setIsActive("INACTIVE");
 		System.out.println(userEntity);

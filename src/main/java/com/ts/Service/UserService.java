@@ -20,7 +20,7 @@ public interface UserService {
 
     public boolean isEmailUnique(String email);
 
-    public boolean saveUser(UserEntity user);
+    public boolean saveUser(UserEntity user) throws Exception;
 
     // Login Page
 
@@ -35,4 +35,8 @@ public interface UserService {
     // Forget Password
 
     public String forgetPass(String email);
+    
+    //Email Send method
+    
+    public String sendEmail(UserEntity user);
 }
