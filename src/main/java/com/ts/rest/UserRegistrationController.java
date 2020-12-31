@@ -63,7 +63,7 @@ public class UserRegistrationController {
 	}
 	
 	
-    public static String generateRandom(int length) {
+    public  String generateRandom(int length) {
         if (length <= 0) {
             throw new IllegalArgumentException("String length must be a positive integer");
         }

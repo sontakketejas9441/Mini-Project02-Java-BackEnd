@@ -27,6 +27,7 @@ import com.ts.repository.CityEntityRepository;
 import com.ts.repository.CountryEntityRepository;
 import com.ts.repository.StateEntityRepository;
 import com.ts.repository.UserEntityRepository;
+import com.ts.rest.UserRegistrationController;
 import com.ts.utils.EmailService;
 
 @Service
@@ -46,6 +47,9 @@ public class UserServiceImpl  implements UserService{
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private UserRegistrationController userRegistrationController;
 	
 	@Override
 	public Map<Integer, String> findCountries() {
@@ -150,19 +154,8 @@ public class UserServiceImpl  implements UserService{
 		return false;
 	}
 
-	@Override
-	public String forgetPass(String email) {
-		// TODO Auto-generated method stub
-		
-		return null;
-	}
-
-	@Override
-	public String sendEmail(UserEntity user) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
+	//User Registered Successful Email Body 
 	public String getUnlockAccEmailBody(UserEntity user) {
 		StringBuffer sb = new StringBuffer("");
 		String body = null;
@@ -186,6 +179,32 @@ public class UserServiceImpl  implements UserService{
 		}
 		return body;
 	}
+	
+	// For resetting the password
+	public String resetPasswordEmailBody(UserEntity user) {
+		StringBuffer sb = new StringBuffer("");
+		String body = null;
+		try {
+			File f = new File("forgot-password-email-body.txt");
+			FileReader fr = new FileReader(f);
+			BufferedReader br = new BufferedReader(fr);
+			String line = br.readLine();
+			while (line != null) {
+				sb.append(line);
+				line = br.readLine();
+			}
+			br.close();
+			body = sb.toString();
+			body = body.replace("{FNAME}", user.getFirstName());
+			body = body.replace("{LNAME}", user.getLastName());
+			body = body.replace("{TEMP-PWD}", user.getPassword());
+			;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return body;
+	}
+	
 	/*
 	public String getRegSuccMailBody(UserEntity user) {
 		String fileName = "unlock-acc-email-body.txt";
@@ -206,4 +225,34 @@ public class UserServiceImpl  implements UserService{
 		return mailBody;
 	}
 */
+
+	public boolean forgotPass(String email) throws MessagingException, IOException {
+		// TODO Auto-generated method stub
+		UserEntity user = userRepo.findByEmail(email);
+		String newPass = userRegistrationController.generateRandom(5);
+		user.setPassword(newPass);
+		
+		String to = user.getEmail();
+		String bodyString = resetPasswordEmailBody(user);
+		String subject =  "Forgot Password Request";
+		
+		boolean msgString = emailService.sendMail(subject, bodyString, to); 
+		if(msgString) {
+			return true;
+		}
+		
+		return false;
+	}
+
+	@Override
+	public String forgetPass(String email) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String sendEmail(UserEntity user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
