@@ -46,7 +46,9 @@ public class UserRegistrationController {
 		if(unique){
 			return "UNIQUE";
 		}
-		return "NOT UNIQUE";
+		else {
+			return "NOT UNIQUE";
+		}
 	}
 
 	@PostMapping("/register")
