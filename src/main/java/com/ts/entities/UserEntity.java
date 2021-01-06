@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 
@@ -15,6 +16,7 @@ import lombok.ToString;
 @Data
 @Entity
 @ToString
+
 public class UserEntity {
 
 	@Id

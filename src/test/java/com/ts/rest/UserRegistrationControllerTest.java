@@ -3,18 +3,23 @@ package com.ts.rest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import java.sql.Date;
 import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ts.Service.UserServiceImpl;
+import com.ts.binding.UserSave;
+import com.ts.entities.UserEntity;
 
 @WebMvcTest(value = UserRegistrationController.class)
 public class UserRegistrationControllerTest {
@@ -104,6 +109,7 @@ public class UserRegistrationControllerTest {
 		
 	}
 
+	//UseCase: If service method returns the true value
 	@Test
 	public void test_isEmailValid_01() throws Exception {
 		
@@ -117,11 +123,80 @@ public class UserRegistrationControllerTest {
         //Perform the request and check the response  
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
-        int status = mvcResult.getResponse().getStatus();
-
+        //int status = mvcResult.getResponse().getStatus();
+        
+        String asString = mvcResult.getResponse().getContentAsString();
+        
         //Comparing actual and expected value  
-        assertEquals(200, status);
+        assertEquals("UNIQUE", asString);
+		
+	}
+	
+	//UseCase: If service method returns the false value
+	@Test
+	public void test_isEmailValid_02() throws Exception {
+		
+		
+		//when...then condition
+		when(userServiceImpl.isEmailUnique("abc@gmail.com")).thenReturn(false);
+		
+		 //Creation of requestBuilder object with GET/POST method   
+         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/emailCheck/abc@gmail.com");
+
+        //Perform the request and check the response  
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        //int status = mvcResult.getResponse().getStatus();
+        
+        String asString = mvcResult.getResponse().getContentAsString();
+        
+        //Comparing actual and expected value  
+        assertEquals("NOT UNIQUE", asString);
 		
 		
 	}
+	
+	@Test
+	public void test_registerUser_01() throws Exception {
+		 
+		
+		//UserEntity user = new UserEntity(101, "ABC","VBB","abc@gmail.com",(long) 1235677, today, "male",1,1,1,"wqqwqw","YES");
+		UserEntity user = new UserEntity();
+		user.setFirstName("");
+		user.setLastName("ss");
+		user.setEmail("s");
+		user.setPhone((long) 123456789);
+		user.setDateOfBirth(new Date(0));
+		user.setGender("Male");
+		user.setCountry(1);
+		user.setState(1);
+		user.setCity(1);
+	
+		//when...then condition
+		when(userServiceImpl.saveUser(user)).thenReturn(true);
+		
+		//ObjectMapper for converting the Java object to Json object
+		ObjectMapper mapper =new ObjectMapper();
+		String userValueAsString = mapper.writeValueAsString(user);
+		
+		 //Creation of requestBuilder object with GET/POST method   
+         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/register")
+        		 																										.contentType(MediaType.APPLICATION_JSON)
+                 																										.content(userValueAsString);
+
+        //Perform the request and check the response  
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+        
+        //String asString = mvcResult.getResponse().getContentAsString();
+
+        //Comparing actual and expected value  
+        assertEquals(400, status);
+		
+		
+	}
+	
+
+	
 }

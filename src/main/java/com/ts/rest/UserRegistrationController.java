@@ -51,17 +51,19 @@ public class UserRegistrationController {
 		}
 	}
 
-	@PostMapping("/register")
+	@PostMapping(value = "/register", consumes = {"application/json"})
 	public ResponseEntity<String> registerUser(@RequestBody UserEntity userEntity) throws Exception{
 		userEntity.setPassword(generateRandom(5));
 		userEntity.setIsActive("INACTIVE");
-		System.out.println(userEntity);
 		boolean savedUser = userServiceImpl.saveUser(userEntity);
 		
 		if (savedUser) {
-			return new ResponseEntity<String> ("User Details saved Successfully", HttpStatus.OK);
+			return new ResponseEntity<String> ("User Details saved Successfully", HttpStatus.CREATED);
 		}
-		return new ResponseEntity<String> ("Please Try again..!!", HttpStatus.BAD_REQUEST);
+		else {
+			return new ResponseEntity<String> ("Please Try again..!!", HttpStatus.BAD_REQUEST);
+		}
+		
 	}
 	
 	
